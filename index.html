@@ -23,6 +23,7 @@
       box-shadow: 0 20px 40px rgba(0,0,0,0.2);
       max-width: 380px;
       z-index: 2;
+      transition: opacity 0.5s ease;
     }
 
     h1 { color: #e6005c; }
@@ -38,7 +39,7 @@
     .buttons {
       margin-top: 30px;
       position: relative;
-      height: 80px;
+      height: 100px;
     }
 
     button {
@@ -47,31 +48,87 @@
       border: none;
       border-radius: 30px;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: transform 0.3s ease, background 0.3s ease;
     }
 
     #yesBtn {
       background: #e6005c;
       color: white;
       font-size: 22px;
-      transform: scale(1.15);
-    }
-
-    #yesBtn:hover {
-      background: #ff3377;
+      transform: scale(1.2);
     }
 
     #noBtn {
       background: #ccc;
       position: absolute;
-      left: 170px;
+      left: 190px;
       font-size: 16px;
+    }
+
+    /* YES pulse */
+    .pulse {
+      animation: pulse 1.2s infinite;
+    }
+
+    @keyframes pulse {
+      0%   { transform: scale(var(--scale)); }
+      50%  { transform: scale(calc(var(--scale) + 0.12)); }
+      100% { transform: scale(var(--scale)); }
+    }
+
+    /* Big pumping heart */
+    .big-heart {
+      position: fixed;
+      font-size: 120px;
+      animation: heartBeat 1s ease-in-out infinite;
+      z-index: 5;
+    }
+
+    @keyframes heartBeat {
+      0% { transform: scale(1); }
+      25% { transform: scale(1.3); }
+      50% { transform: scale(1); }
+      75% { transform: scale(1.25); }
+      100% { transform: scale(1); }
+    }
+
+    /* Floating hearts */
+    .heart {
+      position: fixed;
+      bottom: -20px;
+      font-size: 24px;
+      animation: floatUp 4s linear forwards;
+      pointer-events: none;
+    }
+
+    @keyframes floatUp {
+      to {
+        transform: translateY(-110vh) scale(1.5);
+        opacity: 0;
+      }
+    }
+
+    /* Romantic message animation */
+    .final-message {
+      animation: fadeZoom 2s ease forwards;
+      opacity: 0;
+    }
+
+    @keyframes fadeZoom {
+      from {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
     }
   </style>
 </head>
 <body>
 
-  <div class="card">
+  <div class="card" id="card">
     <h1>Dr. Ragima 💖</h1>
     <p>
       Will you be my Valentine? 🌹<br>
@@ -89,9 +146,13 @@
   <script>
     const noBtn = document.getElementById("noBtn");
     const yesBtn = document.getElementById("yesBtn");
+    const card = document.getElementById("card");
 
     let teased = false;
-    let growScale = 1.15;
+    let scale = 1.2;
+    let pulsing = false;
+
+    yesBtn.style.setProperty("--scale", scale);
 
     noBtn.addEventListener("mouseover", () => {
       if (!teased) {
@@ -105,22 +166,57 @@
       noBtn.textContent = "Think Again 🤏😅";
       noBtn.style.transform = "scale(0.85)";
 
-      growScale += 0.08;           // YES keeps growing
-      yesBtn.style.transform = `scale(${growScale})`;
+      scale += 0.15;
+      yesBtn.style.setProperty("--scale", scale);
+      yesBtn.style.transform = `scale(${scale})`;
 
+      if (!pulsing) {
+        yesBtn.classList.add("pulse");
+        pulsing = true;
+      }
       moveNo();
     });
 
     function moveNo() {
-      noBtn.style.left = Math.random() * 250 + "px";
-      noBtn.style.top = Math.random() * 40 + "px";
+      noBtn.style.left = Math.random() * 260 + "px";
+      noBtn.style.top = Math.random() * 50 + "px";
     }
 
     yesBtn.addEventListener("click", () => {
-      document.querySelector(".card").innerHTML =
-        "<h1>She Said YES! 💘</h1>" +
-        "<p>Dr. Ragima, you just made my heart the happiest ❤️<br>Happy Valentine’s Day!</p>" +
-        "<div class='from'>— From Dr. Parth 💖</div>";
+      card.style.opacity = "0";
+
+      // Big heart
+      const bigHeart = document.createElement("div");
+      bigHeart.className = "big-heart";
+      bigHeart.textContent = "❤️";
+      document.body.appendChild(bigHeart);
+
+      // Floating hearts
+      for (let i = 0; i < 30; i++) {
+        const h = document.createElement("div");
+        h.className = "heart";
+        h.textContent = "❤️";
+        h.style.left = Math.random() * 100 + "vw";
+        h.style.animationDuration = (3 + Math.random() * 2) + "s";
+        document.body.appendChild(h);
+        setTimeout(() => h.remove(), 5000);
+      }
+
+      // Final romantic message
+      setTimeout(() => {
+        bigHeart.remove();
+        card.style.opacity = "1";
+        card.innerHTML = `
+          <h1 class="final-message">She Said YES 💘</h1>
+          <p class="final-message">
+            Dr. Ragima,<br>
+            my heart didn’t just beat today —<br>
+            it chose you ❤️<br><br>
+            Happy Valentine’s Day
+          </p>
+          <div class="from final-message">— Forever yours, Dr. Parth 💖</div>
+        `;
+      }, 3000);
     });
   </script>
 
