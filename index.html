@@ -38,66 +38,34 @@
     .buttons {
       margin-top: 30px;
       position: relative;
-      height: 60px;
+      height: 80px;
     }
 
     button {
-      padding: 12px 25px;
+      padding: 14px 30px;
       font-size: 18px;
       border: none;
       border-radius: 30px;
       cursor: pointer;
-      transition: 0.3s;
+      transition: all 0.3s ease;
     }
 
     #yesBtn {
       background: #e6005c;
       color: white;
+      font-size: 22px;
+      transform: scale(1.15);
     }
 
     #yesBtn:hover {
       background: #ff3377;
-      transform: scale(1.1);
     }
 
     #noBtn {
       background: #ccc;
       position: absolute;
-      left: 120px;
-    }
-
-    /* Hearts */
-    .heart {
-      position: fixed;
-      bottom: -20px;
-      font-size: 24px;
-      animation: floatUp 4s linear forwards;
-      pointer-events: none;
-    }
-
-    @keyframes floatUp {
-      to {
-        transform: translateY(-110vh) scale(1.5);
-        opacity: 0;
-      }
-    }
-
-    /* Confetti */
-    .confetti {
-      position: fixed;
-      width: 10px;
-      height: 10px;
-      background-color: red;
-      top: -10px;
-      animation: fall 3s linear forwards;
-      pointer-events: none;
-    }
-
-    @keyframes fall {
-      to {
-        transform: translateY(110vh) rotate(360deg);
-        opacity: 0;
-      }
+      left: 170px;
+      font-size: 16px;
     }
   </style>
 </head>
@@ -123,44 +91,36 @@
     const yesBtn = document.getElementById("yesBtn");
 
     let teased = false;
+    let growScale = 1.15;
 
     noBtn.addEventListener("mouseover", () => {
       if (!teased) {
         noBtn.textContent = "Think Again 😌";
         teased = true;
       }
+      moveNo();
+    });
+
+    noBtn.addEventListener("click", () => {
+      noBtn.textContent = "Think Again 🤏😅";
+      noBtn.style.transform = "scale(0.85)";
+
+      growScale += 0.08;           // YES keeps growing
+      yesBtn.style.transform = `scale(${growScale})`;
+
+      moveNo();
+    });
+
+    function moveNo() {
       noBtn.style.left = Math.random() * 250 + "px";
       noBtn.style.top = Math.random() * 40 + "px";
-    });
+    }
 
     yesBtn.addEventListener("click", () => {
       document.querySelector(".card").innerHTML =
         "<h1>She Said YES! 💘</h1>" +
         "<p>Dr. Ragima, you just made my heart the happiest ❤️<br>Happy Valentine’s Day!</p>" +
         "<div class='from'>— From Dr. Parth 💖</div>";
-
-      // Hearts
-      for (let i = 0; i < 25; i++) {
-        const heart = document.createElement("div");
-        heart.className = "heart";
-        heart.textContent = "❤️";
-        heart.style.left = Math.random() * 100 + "vw";
-        heart.style.animationDuration = (3 + Math.random() * 2) + "s";
-        document.body.appendChild(heart);
-        setTimeout(() => heart.remove(), 5000);
-      }
-
-      // Confetti
-      for (let i = 0; i < 80; i++) {
-        const confetti = document.createElement("div");
-        confetti.className = "confetti";
-        confetti.style.left = Math.random() * 100 + "vw";
-        confetti.style.backgroundColor =
-          ["#ff4d6d", "#ffafcc", "#cdb4db", "#ffc8dd"][Math.floor(Math.random() * 4)];
-        confetti.style.animationDuration = (2 + Math.random() * 2) + "s";
-        document.body.appendChild(confetti);
-        setTimeout(() => confetti.remove(), 4000);
-      }
     });
   </script>
 
