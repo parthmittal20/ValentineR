@@ -143,39 +143,92 @@
     <div class="from">— From Dr. Parth 💖</div>
   </div>
 
-  <script>
-    const noBtn = document.getElementById("noBtn");
-    const yesBtn = document.getElementById("yesBtn");
-    const card = document.getElementById("card");
+<script>
+  const noBtn = document.getElementById("noBtn");
+  const yesBtn = document.getElementById("yesBtn");
+  const card = document.getElementById("card");
 
-    let teased = false;
-    let scale = 1.2;
-    let pulsing = false;
+  let teased = false;
+  let scale = 1.2;
+  let pulsing = false;
 
+  yesBtn.style.setProperty("--scale", scale);
+
+  const positions = [
+    { x: -120, y: -60 },
+    { x: 120, y: -60 },
+    { x: -120, y: 60 },
+    { x: 120, y: 60 },
+    { x: 0, y: 90 }
+  ];
+
+  function moveNearYes() {
+    const rect = yesBtn.getBoundingClientRect();
+    const pos = positions[Math.floor(Math.random() * positions.length)];
+
+    noBtn.style.left = rect.left + pos.x + "px";
+    noBtn.style.top = rect.top + pos.y + "px";
+  }
+
+  noBtn.addEventListener("mouseover", () => {
+    if (!teased) {
+      noBtn.textContent = "Think Again 😌";
+      teased = true;
+    }
+    moveNearYes();
+  });
+
+  noBtn.addEventListener("click", () => {
+    noBtn.textContent = "Think Again 🤏😅";
+    noBtn.style.transform = "scale(0.75)";
+
+    // 🔥 RAPID YES GROWTH
+    scale += 0.35;
     yesBtn.style.setProperty("--scale", scale);
+    yesBtn.style.transform = `scale(${scale})`;
 
-    noBtn.addEventListener("mouseover", () => {
-      if (!teased) {
-        noBtn.textContent = "Think Again 😌";
-        teased = true;
-      }
-      moveNo();
-    });
+    if (!pulsing) {
+      yesBtn.classList.add("pulse");
+      pulsing = true;
+    }
 
-    noBtn.addEventListener("click", () => {
-      noBtn.textContent = "Think Again 🤏😅";
-      noBtn.style.transform = "scale(0.85)";
+    moveNearYes();
+  });
 
-      scale += 0.15;
-      yesBtn.style.setProperty("--scale", scale);
-      yesBtn.style.transform = `scale(${scale})`;
+  yesBtn.addEventListener("click", () => {
+    card.style.opacity = "0";
 
-      if (!pulsing) {
-        yesBtn.classList.add("pulse");
-        pulsing = true;
-      }
-      moveNo();
-    });
+    const bigHeart = document.createElement("div");
+    bigHeart.className = "big-heart";
+    bigHeart.textContent = "❤️";
+    document.body.appendChild(bigHeart);
+
+    for (let i = 0; i < 30; i++) {
+      const h = document.createElement("div");
+      h.className = "heart";
+      h.textContent = "❤️";
+      h.style.left = Math.random() * 100 + "vw";
+      h.style.animationDuration = (3 + Math.random() * 2) + "s";
+      document.body.appendChild(h);
+      setTimeout(() => h.remove(), 5000);
+    }
+
+    setTimeout(() => {
+      bigHeart.remove();
+      card.style.opacity = "1";
+      card.innerHTML = `
+        <h1 class="final-message">She Said YES 💘</h1>
+        <p class="final-message">
+          Dr. Ragima,<br>
+          my heart didn’t just beat today —<br>
+          it chose you ❤️<br><br>
+          Happy Valentine’s Day
+        </p>
+        <div class="from final-message">— Forever yours, Dr. Parth 💖</div>
+      `;
+    }, 3000);
+  });
+</script>
 
     function moveNo() {
       noBtn.style.left = Math.random() * 260 + "px";
